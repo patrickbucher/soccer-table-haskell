@@ -1,0 +1,23 @@
+cabal-version: 3.14
+name:          soccer-table
+version:       0.1.0.0
+license:       NONE
+author:        Patrick Bucher
+maintainer:    patrick.bucher@mailbox.org
+
+common compilation
+  ghc-options: -Wall
+  default-language: Haskell2010
+
+library
+  import:           compilation
+  exposed-modules:  SoccerTable
+  build-depends:    base
+  hs-source-dirs:   src
+
+executable soccer-table
+  import:           compilation
+  main-is:          Main.hs
+  build-depends:    soccer-table
+                  , base
+  hs-source-dirs:   app
