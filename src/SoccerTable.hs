@@ -1,5 +1,6 @@
-module SoccerTable (GameResult,parse,TableEntry,fromGameResult) where
+module SoccerTable (GameResult,parse,TableEntry,fromGameResult,merge,mergeAll) where
 import Text.Regex.Posix ((=~~))
+import qualified Data.Map as M
 
 data GameResult = GameResult
   { homeTeam :: String
@@ -71,3 +72,33 @@ fromGameResult result =
       , conceded = hG
       , difference = aG - hG
       })
+
+merge :: TableEntry -> TableEntry -> Maybe TableEntry
+merge left right =
+  if (name left) == (name right)
+  then Just TableEntry
+  {
+    rank = 0
+  , name = (name left)
+  , points = (points left) + (points right)
+  , won = (won left) + (won right)
+  , tied = (tied left) + (tied right)
+  , lost = (lost left) + (lost right)
+  , scored = (scored left) + (scored right)
+  , conceded = (conceded left) + (conceded right)
+  , difference = (difference left) + (difference right)
+  }
+  else Nothing
+
+mergeAll :: [TableEntry] -> (M.Map String TableEntry)
+mergeAll entries =
+  foldl insert (M.fromList []) entries
+  where
+    insert :: (M.Map String TableEntry) -> TableEntry -> (M.Map String TableEntry)
+    insert acc e =
+      case M.lookup (name e) acc of
+        Just x ->
+          case (merge e x) of
+            Just f -> M.insert (name f) e acc
+            Nothing -> acc
+        Nothing -> M.insert (name e) e acc
