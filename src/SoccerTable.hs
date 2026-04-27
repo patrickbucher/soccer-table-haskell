@@ -1,4 +1,4 @@
-module SoccerTable (GameResult,parse,TableEntry,fromGameResult,merge,mergeAll) where
+module SoccerTable (GameResult,parse,TableEntry,fromGameResult,merge,mergeAll,process) where
 import Text.Regex.Posix ((=~~))
 import qualified Data.Map as M
 
@@ -102,3 +102,18 @@ mergeAll entries =
             Just f -> M.insert (name f) e acc
             Nothing -> acc
         Nothing -> M.insert (name e) e acc
+
+process :: [String] -> (M.Map String TableEntry)
+process items =
+  let
+    xs = map parse items
+    ys = filter onlyJust xs
+    zs = map (\(Just x) -> fromGameResult x) ys
+    as = map (\(a,b) -> [a,b]) zs
+  in
+    mergeAll $ concat as
+  where
+    onlyJust x =
+      case x of
+        Just _ -> True
+        Nothing -> False
