@@ -1,6 +1,15 @@
-module SoccerTable (GameResult,parse,TableEntry,fromGameResult,merge,mergeAll,process) where
+module SoccerTable
+( GameResult
+, parse
+, TableEntry
+, fromGameResult
+, merge
+, mergeAll
+, process)
+where
 import Text.Regex.Posix ((=~~))
 import qualified Data.Map as M
+import qualified Data.List as L (sort)
 
 data GameResult = GameResult
   { homeTeam :: String
@@ -13,7 +22,7 @@ data GameResult = GameResult
 parse :: String -> Maybe GameResult
 parse result =
   let
-    matches :: Maybe (String,String,String,[String])
+    matches :: Maybe (String, String, String, [String])
     matches = result =~~ "^(.+) ([0-9]+):([0-9]+) (.+)$"
   in
     case matches of
@@ -36,21 +45,25 @@ data TableEntry = TableEntry
   , conceded :: Int
   , difference :: Int
   }
-  deriving (Show)
+  deriving (Eq, Show)
 
-fromGameResult :: GameResult -> (TableEntry,TableEntry)
+instance Ord TableEntry where
+  compare l r = compare
+    (points r, difference r, won r, name l)
+    (points l, difference l, won l, name r)
+
+fromGameResult :: GameResult -> (TableEntry, TableEntry)
 fromGameResult result =
   let
-    (hG,aG) = (homeGoals result,awayGoals result)
-    (hP,aP,hW,aW,hT,aT,hL,aL) =
+    (hG, aG) = (homeGoals result, awayGoals result)
+    (hP, aP, hW, aW, hT, aT, hL, aL) =
       case (compare hG aG) of
-        LT -> (0,3,0,1,0,0,1,0)
-        EQ -> (1,1,0,0,1,1,0,0)
-        GT -> (3,0,1,0,0,0,0,1)
-  in
-    (TableEntry
-      {
-        rank = 0
+        LT -> (0, 3, 0, 1, 0, 0, 1, 0)
+        EQ -> (1, 1, 0, 0, 1, 1, 0, 0)
+        GT -> (3, 0, 1, 0, 0, 0, 0, 1)
+  in (
+    TableEntry
+      { rank = 0
       , name = (homeTeam result)
       , points = hP
       , won = hW
@@ -61,9 +74,8 @@ fromGameResult result =
       , difference = hG - aG 
       },
     TableEntry
-      { 
-        rank = 0
-      , name = (homeTeam result)
+      { rank = 0
+      , name = (awayTeam result)
       , points = aP
       , won = aW
       , tied = aT
@@ -77,8 +89,7 @@ merge :: TableEntry -> TableEntry -> Maybe TableEntry
 merge left right =
   if (name left) == (name right)
   then Just TableEntry
-  {
-    rank = 0
+  { rank = 0
   , name = (name left)
   , points = (points left) + (points right)
   , won = (won left) + (won right)
@@ -92,28 +103,24 @@ merge left right =
 
 mergeAll :: [TableEntry] -> (M.Map String TableEntry)
 mergeAll entries =
-  foldl insert (M.fromList []) entries
+  foldl combine (M.fromList []) entries
   where
-    insert :: (M.Map String TableEntry) -> TableEntry -> (M.Map String TableEntry)
-    insert acc e =
+    combine :: (M.Map String TableEntry) -> TableEntry -> (M.Map String TableEntry)
+    combine acc e =
       case M.lookup (name e) acc of
         Just x ->
           case (merge e x) of
-            Just f -> M.insert (name f) e acc
+            Just f -> M.insert (name f) f acc
             Nothing -> acc
         Nothing -> M.insert (name e) e acc
 
-process :: [String] -> (M.Map String TableEntry)
+process :: [String] -> [TableEntry]
 process items =
   let
-    xs = map parse items
-    ys = filter onlyJust xs
-    zs = map (\(Just x) -> fromGameResult x) ys
-    as = map (\(a,b) -> [a,b]) zs
+    parsed = map parse items
+    nested = [fromGameResult x | Just x <- parsed]
+    entries = map (\(a, b) -> [a, b]) nested
   in
-    mergeAll $ concat as
+    calcRank $ L.sort $ M.elems $ mergeAll $ concat entries
   where
-    onlyJust x =
-      case x of
-        Just _ -> True
-        Nothing -> False
+    calcRank es = map (\(e, r) -> e { rank = r }) $ zip es [1..]
