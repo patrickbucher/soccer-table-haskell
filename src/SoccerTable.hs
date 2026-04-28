@@ -5,7 +5,8 @@ module SoccerTable
 , fromGameResult
 , merge
 , mergeAll
-, process)
+, process
+)
 where
 import Text.Regex.Posix ((=~~))
 import qualified Data.Map as M
@@ -61,8 +62,8 @@ fromGameResult result =
         LT -> (0, 3, 0, 1, 0, 0, 1, 0)
         EQ -> (1, 1, 0, 0, 1, 1, 0, 0)
         GT -> (3, 0, 1, 0, 0, 0, 0, 1)
-  in (
-    TableEntry
+  in
+    ( TableEntry
       { rank = 0
       , name = (homeTeam result)
       , points = hP
@@ -72,8 +73,8 @@ fromGameResult result =
       , scored = hG 
       , conceded = aG 
       , difference = hG - aG 
-      },
-    TableEntry
+      }
+    , TableEntry
       { rank = 0
       , name = (awayTeam result)
       , points = aP
@@ -83,7 +84,8 @@ fromGameResult result =
       , scored = aG
       , conceded = hG
       , difference = aG - hG
-      })
+      }
+    )
 
 merge :: TableEntry -> TableEntry -> Maybe TableEntry
 merge left right =
