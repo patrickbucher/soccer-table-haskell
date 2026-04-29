@@ -50,10 +50,10 @@ data TableEntry = TableEntry
 
 instance Ord TableEntry where
   compare l r = compare
-    (points r, difference r, won r, name l)
     (points l, difference l, won l, name r)
+    (points r, difference r, won r, name l)
 
-fromGameResult :: GameResult -> (TableEntry, TableEntry)
+fromGameResult :: GameResult -> [TableEntry]
 fromGameResult result =
   let
     (hG, aG) = (homeGoals result, awayGoals result)
@@ -63,7 +63,7 @@ fromGameResult result =
         EQ -> (1, 1, 0, 0, 1, 1, 0, 0)
         GT -> (3, 0, 1, 0, 0, 0, 0, 1)
   in
-    ( TableEntry
+    [ TableEntry
       { rank = 0
       , name = (homeTeam result)
       , points = hP
@@ -85,7 +85,7 @@ fromGameResult result =
       , conceded = hG
       , difference = aG - hG
       }
-    )
+    ]
 
 merge :: TableEntry -> TableEntry -> Maybe TableEntry
 merge left right =
@@ -119,10 +119,8 @@ mergeAll entries =
 process :: [String] -> [TableEntry]
 process items =
   let
-    parsed = map parse items
-    nested = [fromGameResult x | Just x <- parsed]
-    entries = map (\(a, b) -> [a, b]) nested
+    nested = concat [fromGameResult x | Just x <- map parse items]
   in
-    calcRank $ L.sort $ M.elems $ mergeAll $ concat entries
+    calcRank . reverse . L.sort . M.elems . mergeAll $ nested
   where
-    calcRank es = map (\(e, r) -> e { rank = r }) $ zip es [1..]
+    calcRank = map (\(r, e) -> e { rank = r }) . zip [1..]
