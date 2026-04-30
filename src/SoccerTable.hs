@@ -1,11 +1,11 @@
 module SoccerTable
 ( GameResult
-, parse
+, fromRawResult
 , TableEntry
 , fromGameResult
 , merge
 , mergeAll
-, process
+, calculateTable
 )
 where
 import Text.Regex.Posix ((=~~))
@@ -20,18 +20,18 @@ data GameResult = GameResult
   }
   deriving (Show)
 
-parse :: String -> Maybe GameResult
-parse result =
+fromRawResult :: String -> Maybe GameResult
+fromRawResult result =
   let
     matches :: Maybe (String, String, String, [String])
     matches = result =~~ "^(.+) ([0-9]+):([0-9]+) (.+)$"
   in
     case matches of
-      Just (_, _, _, [ht, hg, ag, at]) -> Just GameResult
-        { homeTeam = ht
-        , awayTeam = at
-        , homeGoals = read hg :: Int
-        , awayGoals = read ag :: Int
+      Just (_, _, _, [hT, hG, aG, aT]) -> Just GameResult
+        { homeTeam = hT
+        , awayTeam = aT
+        , homeGoals = read hG :: Int
+        , awayGoals = read aG :: Int
         }
       _ -> Nothing
 
@@ -116,10 +116,10 @@ mergeAll entries =
             Nothing -> acc
         Nothing -> M.insert (name e) e acc
 
-process :: [String] -> [TableEntry]
-process items =
+calculateTable :: [String] -> [TableEntry]
+calculateTable rawResults =
   let
-    nested = concat [fromGameResult x | Just x <- map parse items]
+    nested = concat [fromGameResult x | Just x <- map fromRawResult rawResults]
   in
     calcRank . reverse . L.sort . M.elems . mergeAll $ nested
   where
