@@ -23,4 +23,7 @@ executable soccer-table
   main-is:          Main.hs
   build-depends:    soccer-table
                   , base
+                  , extra
+                  , directory
+                  , split
   hs-source-dirs:   app
