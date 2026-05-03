@@ -1,6 +1,13 @@
 module Main where
-import SoccerTable as ST (greet)
+import qualified System.Environment as SE (getArgs)
 
 main :: IO ()
 main =
-  print $ ST.greet "Soccer Table"
+  do
+    args <- SE.getArgs
+    let
+      dir = 
+        if null args
+        then error "usage: soccer-table DIR"
+        else (head args)
+    putStrLn dir
