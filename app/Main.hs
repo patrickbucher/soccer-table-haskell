@@ -13,7 +13,6 @@ slurp f = do
   let l = S.splitOn "\n" c
   return l
 
-
 main :: IO ()
 main = do
   args <- Env.getArgs
