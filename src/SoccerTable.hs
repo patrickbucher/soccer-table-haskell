@@ -1,7 +1,7 @@
 module SoccerTable
 ( GameResult
 , fromRawResult
-, TableEntry
+, TableEntry(..)
 , fromGameResult
 , merge
 , mergeAll

@@ -12,7 +12,7 @@ common compilation
 library
   import:           compilation
   exposed-modules:  SoccerTable
-                  , Misc
+                  , Formatting
   build-depends:    base
                   , containers
                   , regex-base
