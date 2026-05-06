@@ -15,12 +15,14 @@ slurp f = do
 main :: IO ()
 main = do
   args <- Env.getArgs
-  path <-
-    if null args
-    then Ex.exitWith (Ex.ExitFailure 1)
-    else return (head args)
+  path <- case (firstArg args) of
+    Just s -> return s
+    _ -> Ex.exitWith (Ex.ExitFailure 1)
   files <- Dir.listFiles path
   results <- mapM slurp files
   let table = ST.calculateTable $ concat results
   let output = F.formatTable table
   putStrLn output
+  where
+    firstArg [] = Nothing
+    firstArg (x:_) = Just x
