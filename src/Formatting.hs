@@ -24,7 +24,7 @@ formatRow cols = interpose (map align cols) " "
     align (s, R, n) = padLeft s n
 
 interpose :: [String] -> String -> String
-interpose ss s = concat $ map (\(l, r) -> l <> r) $ zip ss (repeat s)
+interpose ss s = concat $ zipWith (\l r -> l <> r) ss (repeat s)
 
 padLeft :: String -> Int -> String
 padLeft s n = take (n - length s) (repeat ' ') <> s
