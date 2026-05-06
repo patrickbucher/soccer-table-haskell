@@ -23,14 +23,14 @@ formatRow cols = interpose (map align cols) " "
     align (s, L, n) = padRight s n
     align (s, R, n) = padLeft s n
 
+interpose :: [String] -> String -> String
+interpose ss s = concat $ map (\(l, r) -> l <> r) $ zip ss (repeat s)
+
 padLeft :: String -> Int -> String
 padLeft s n = take (n - length s) (repeat ' ') <> s
 
 padRight :: String -> Int -> String
 padRight s n = s <> take (n - length s) (repeat ' ')
-
-interpose :: [String] -> String -> String
-interpose ss s = concat $ map (\(l, r) -> l <> r) $ zip ss (repeat s)
 
 titleRow :: String
 titleRow = formatRow colSpec
