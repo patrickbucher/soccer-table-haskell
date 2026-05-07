@@ -23,6 +23,9 @@ description:
 
   A league table is generated from those results and printed to the screen.
 
+source-repository head
+  type: git
+  location: https://github.com/patrickbucher/soccer-table-haskell
 
 common compilation
   ghc-options: -Wall
@@ -38,6 +41,15 @@ library
                   , regex-posix ^>= 0.96.0.0
   hs-source-dirs:   src
 
+test-suite soccer-table-test
+  import:         compilation
+  type:           exitcode-stdio-1.0
+  build-depends:  soccer-table
+                , base ^>= 4.19.0.0
+                , hspec ^>= 2.11.17
+  hs-source-dirs: test
+  main-is:        Main.hs
+
 executable soccer-table
   import:           compilation
   main-is:          Main.hs
@@ -48,6 +60,3 @@ executable soccer-table
                   , split ^>= 0.2.0
   hs-source-dirs:   app
 
-source-repository head
-  type: git
-  location: https://github.com/patrickbucher/soccer-table-haskell

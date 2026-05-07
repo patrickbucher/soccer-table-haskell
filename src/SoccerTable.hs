@@ -1,5 +1,5 @@
 module SoccerTable
-( GameResult
+( GameResult(..)
 , fromRawResult
 , TableEntry(..)
 , fromGameResult
@@ -18,7 +18,7 @@ data GameResult = GameResult
   , homeGoals :: Int
   , awayGoals :: Int
   }
-  deriving (Show)
+  deriving (Eq, Show)
 
 fromRawResult :: String -> Maybe GameResult
 fromRawResult result =
