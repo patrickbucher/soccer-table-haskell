@@ -1,5 +1,5 @@
 module FormattingSpec (spec) where
-import qualified Test.Hspec as HS (Spec, describe, hspec, it, shouldBe)
+import qualified Test.Hspec as HS (Spec, describe, it, shouldBe)
 import qualified Formatting as F (formatTable)
 import qualified SoccerTable as ST (TableEntry(..))
 

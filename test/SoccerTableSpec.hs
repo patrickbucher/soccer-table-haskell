@@ -1,5 +1,5 @@
 module SoccerTableSpec (spec) where
-import qualified Test.Hspec as HS (Spec, describe, hspec, it, shouldBe)
+import qualified Test.Hspec as HS (Spec, describe, it, shouldBe)
 import qualified SoccerTable as ST (fromRawResult, GameResult(..))
 
 spec :: HS.Spec
