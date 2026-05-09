@@ -1,9 +1,9 @@
-module Main (main) where
-import qualified Test.Hspec as HS (hspec, describe, it, shouldBe)
+module SoccerTableSpec (spec) where
+import qualified Test.Hspec as HS (Spec, describe, hspec, it, shouldBe)
 import qualified SoccerTable as ST (fromRawResult, GameResult(..))
 
-main :: IO ()
-main = HS.hspec $ do
+spec :: HS.Spec
+spec = do
   HS.describe "SoccerTable.fromRawResult" $ do
     HS.it "parses a raw game result" $ do
       ST.fromRawResult "Foo 3:2 Bar" `HS.shouldBe` Just ST.GameResult
