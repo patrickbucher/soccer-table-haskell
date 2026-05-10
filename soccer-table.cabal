@@ -46,6 +46,7 @@ test-suite soccer-table-test
   type:           exitcode-stdio-1.0
   build-depends:  soccer-table
                 , base ^>= 4.19.0.0
+                , containers ^>= 0.6.0
                 , hspec ^>= 2.11.17
   hs-source-dirs: test
   main-is:        Spec.hs

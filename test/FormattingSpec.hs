@@ -12,7 +12,7 @@ spec = do
         a = ST.TableEntry
           { ST.rank = 1
           , ST.name = "A"
-          , ST.points = 7
+          , ST.points = 6
           , ST.won = 2
           , ST.tied = 0
           , ST.lost = 0
@@ -45,6 +45,6 @@ spec = do
         table = "\
 \  # Team                              P  W  T  L  +  -   = \n\
 \----------------------------------------------------------\n\
-\  1 A                                 7  2  0  0  5  0   5 \n\
+\  1 A                                 6  2  0  0  5  0   5 \n\
 \  2 B                                 1  0  1  1  1  3  -2 \n\
 \  3 C                                 1  0  1  1  1  4  -3 \n"
