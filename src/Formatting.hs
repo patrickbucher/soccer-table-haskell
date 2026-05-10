@@ -1,3 +1,9 @@
+{-|
+Module:      Formatting
+Description: Formats League Tables
+
+This module provides functionality to format soccer league tables.
+-}
 module Formatting (formatTable)
 where
 import qualified SoccerTable as ST (TableEntry(..))
@@ -61,6 +67,7 @@ formatTableEntry e =
   in
     formatRow cols
 
+-- |The 'formatTable' function formats the sorted list of table entreies as a league table.
 formatTable :: [ST.TableEntry] -> String
 formatTable t = 
   let
