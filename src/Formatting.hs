@@ -67,7 +67,7 @@ formatTableEntry e =
   in
     formatRow cols
 
--- |The 'formatTable' function formats the sorted list of table entreies as a league table.
+-- |The 'formatTable' function formats the sorted list of table entries as a league table.
 formatTable :: [ST.TableEntry] -> String
 formatTable t = 
   let

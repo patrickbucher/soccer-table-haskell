@@ -1,3 +1,9 @@
+{-|
+Module:      SoccerTable
+Description: Calculates Leage Tables
+
+This module provides functionality to calculate league tables from game results.
+-}
 module SoccerTable
 ( GameResult(..)
 , fromRawResult
@@ -12,6 +18,7 @@ import Text.Regex.Posix ((=~~))
 import qualified Data.Map as M
 import qualified Data.List as L (sort)
 
+-- |GameResult represents the parsed result of a soccer game.
 data GameResult = GameResult
   { homeTeam :: String
   , awayTeam :: String
@@ -20,6 +27,7 @@ data GameResult = GameResult
   }
   deriving (Eq, Show)
 
+-- |fromRawResult parses a string match result into a GameResult.
 fromRawResult :: String -> Maybe GameResult
 fromRawResult result =
   let
@@ -35,6 +43,7 @@ fromRawResult result =
         }
       _ -> Nothing
 
+-- |TableEntry represents a line in a soccer league table.
 data TableEntry = TableEntry
   { rank :: Int
   , name :: String
@@ -53,6 +62,9 @@ instance Ord TableEntry where
     (points l, difference l, won l, name r)
     (points r, difference r, won r, name l)
 
+-- |fromGameResult turns a GameResult into two TableEntry values representing
+-- the league table for a single day from the perspective of the two
+-- participating teams.
 fromGameResult :: GameResult -> [TableEntry]
 fromGameResult result =
   let
@@ -87,6 +99,8 @@ fromGameResult result =
       }
     ]
 
+-- |merge combines two entries with the same name to a single one.
+-- If the names do not match, Nothing is returned.
 merge :: TableEntry -> TableEntry -> Maybe TableEntry
 merge left right =
   if (name left) == (name right)
@@ -103,6 +117,8 @@ merge left right =
   }
   else Nothing
 
+-- |mergeAll merges the matching TableEntry values of the argument into a map.
+-- The map's key is the team's name, its values are the team's merged TableEntry.
 mergeAll :: [TableEntry] -> (M.Map String TableEntry)
 mergeAll entries =
   foldl combine (M.fromList []) entries
@@ -116,6 +132,8 @@ mergeAll entries =
             Nothing -> acc
         Nothing -> M.insert (name e) e acc
 
+-- |calculateTable parses a list of raw game results and returns the sorted
+-- league table.
 calculateTable :: [String] -> [TableEntry]
 calculateTable rawResults =
   let
