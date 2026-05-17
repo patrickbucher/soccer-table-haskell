@@ -14,7 +14,7 @@ module SoccerTable
 , calculateTable
 )
 where
-import Text.Regex.Posix ((=~~))
+import Text.Regex.TDFA ((=~~))
 import qualified Data.Map as M
 import qualified Data.List as L (sort)
 
