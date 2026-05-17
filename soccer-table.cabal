@@ -6,6 +6,7 @@ license-file:    LICENSE
 author:          Patrick Bucher
 maintainer:      patrick.bucher@mailbox.org
 extra-doc-files: README.md
+               , CHANGELOG.md
 category:        utilities
 synopsis:        Create League Tables from Soccer Game Results
 description:
